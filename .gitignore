@@ -1,0 +1,7 @@
+# Python
+.venv
+**/__pycache__/
+
+# Tests
+.coverage
+.pytest_cache/
