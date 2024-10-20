@@ -32,15 +32,19 @@ A restful api for mycareer project
 
 ## Documentation
 
-```bash
-# Go to documentation folder
-cd mkdocs
+1. Local documentation
 
-# Generate the documentation
-mkdocs/build
-```
+    ```bash
+    # Go to documentation folder
+    cd mkdocs
 
-The project documentation is available [here](docs/site/index.html)
+    # Generate the documentation
+    mkdocs build
+    ```
+
+The local project documentation is available [here](_site/index.html)
+
+The github pages is available [here](https://aslv-consulting.github.io/mycareer-api/)
 
 ## Tests
 

@@ -1,4 +1,5 @@
 site_name: My career
+site_dir: ../_site
 
 nav:
   - Home: index.md

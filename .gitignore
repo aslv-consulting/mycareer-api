@@ -5,3 +5,8 @@
 # Tests
 .coverage
 .pytest_cache/
+
+# Documentation
+docs/*
+!docs/.keepignore
+_site/
