@@ -16,9 +16,7 @@
 
 The coverage is available [here](coverage/index.html)
 
-## Features
-
-### Goals
+## Goals Features
 
 **Career Planning**: Enable users to plan their career paths by setting short-term and long-term goals.
 
@@ -49,3 +47,16 @@ The coverage is available [here](coverage/index.html)
 - **Achievement Log**: Maintain a log of user achievements and milestones.
 - **Performance Reviews**: Facilitate self-assessments and peer reviews.
 - **Analytics Dashboard**: Provide a dashboard with insights and analytics on career progress.
+
+## Goal attributes
+
+- **Title**: The name of the goal, which should be clear and precise.
+- **Description**: A detailed explanation of the goal, including why it is important and how it can be achieved.
+- **Start Date**: The date when the user begins working on the goal.
+- **End Date**: The date by which the goal should be achieved.
+- **Status**: The current state of the goal (e.g., "In Progress", "Completed", "Not Started").
+- **Priority**: The level of importance of the goal (e.g., "High", "Medium", "Low").
+- **Progress**: An indicator of the percentage of the goal that has been achieved.
+- **Milestones**: Key steps or milestones that need to be reached to progress towards the goal.
+- **Resources**: Tools, documents, or contacts necessary to achieve the goal.
+- **Comments**: Notes or reflections from the user regarding the goal.
