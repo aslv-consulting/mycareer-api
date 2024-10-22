@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2024-10-22
 
-### Added in 2024-10-22
+### Added in 0.1.0
 
 - Initial release of the My Career API.
 - Tests with coverage.
+- List goals
+

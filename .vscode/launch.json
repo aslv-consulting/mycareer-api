@@ -1,0 +1,61 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "FastAPI: Dev",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/fastapi",
+            "env": {
+              "DATABASE_URL": "sqlite:///mycareer.db"
+            },
+            "args": [
+              "dev",
+              "${workspaceFolder}/mycareer/main.py"
+            ]
+          },
+          {
+            "name": "Alembic: Create Migration",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/alembic",
+            "args": ["revision", "--autogenerate"],
+            "env": {
+              "DATABASE_URL": "sqlite:///mycareer.db"
+            }
+          },
+          {
+            "name": "Alembic: Upgrade Head",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/alembic",
+            "args": ["upgrade", "head"],
+            "env": {
+              "DATABASE_URL": "sqlite:///mycareer.db"
+            }
+          },
+          {
+            "name": "Alembic: Downgrade",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/alembic",
+            "args": ["downgrade", "-1"],
+            "env": {
+              "DATABASE_URL": "sqlite:///mycareer.db"
+            }
+          },
+          {
+            "name": "Pylint: mycareer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/pylint",
+            "args": [
+              "${workspaceFolder}/mycareer",
+              "${workspaceFolder}/tests"
+            ],
+          },
+    ]
+}

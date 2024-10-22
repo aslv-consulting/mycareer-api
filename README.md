@@ -25,14 +25,38 @@ The api is available [here](http://localhost:8000)
 
 The API documentation is available [here](http://localhost:8000/docs)
 
+## Migration
+
+```bash
+# Create a migration
+alembic revision --autogenerate -m"message"
+
+# Migrate
+alembic upgrade head
+
+# Downgrade the last commit
+alembic downgrade -1
+
+# Downgrade until the commit
+alembic downgrade <revision>
+
+# Reset the database
+alembic downgrade base
+```
+
 ## Tests
 
 ```bash
-# Run test
 pytest
 ```
 
 The html coverage is available [here](reports/coverage/index.html)
+
+## Linter
+
+```bash
+pylint mycareer tests
+```
 
 ## Changlog
 

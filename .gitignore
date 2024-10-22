@@ -6,3 +6,8 @@
 .pytest_cache/
 reports
 .coverage
+
+# Database
+mycareer.db
+mycareer_test.db
+alembic/REAMDME

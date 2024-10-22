@@ -13,16 +13,16 @@ from mycareer.main import app
 
 client = TestClient(app)
 
-def test_root() -> None:
-    """Test the root endpoint.
+def test_echo() -> None:
+    """Test the echo endpoint.
 
-    This test checks if the root endpoint ("/") returns a status code of 200
+    This test checks if the echo endpoint ("/") returns a status code of 200
     and the expected JSON response.
 
     Asserts:
         response.status_code: The HTTP status code of the response.
         response.json(): The JSON body of the response.
     """
-    response = client.get("/")
+    response = client.get("/echo")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
+    assert response.json() == {"message": "echo"}
