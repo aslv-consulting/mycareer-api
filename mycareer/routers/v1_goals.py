@@ -7,7 +7,7 @@ Functions:
 """
 
 from typing import Annotated, List
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException
 from sqlmodel import Session, select
 from mycareer.database import get_session
 from mycareer.models import Goal
@@ -54,3 +54,24 @@ async def create_goal(goal: GoalCreate, session: SessionDep) -> GoalRead:
     session.commit()
     session.refresh(db_goal)
     return db_goal
+
+@router.delete("/{goal_id}", status_code=204, tags=["goals"])
+async def delete_goal(goal_id: int, session: SessionDep) -> None:
+    """
+    ## Description
+
+    Endpoint to delete a goal.
+
+    ## Args
+
+        goal_id (int): The ID of the goal to be deleted.
+
+    ## Raises
+
+        HTTPException: If the goal with the given ID does not exist.
+    """
+    goal = session.get(Goal, goal_id)
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+    session.delete(goal)
+    session.commit()

@@ -57,6 +57,12 @@ Functions:
     
     test_create_goal_with_none_due_date: 
         Tests the create_goal endpoint with a None due date.
+
+    test_delete_existing_goal:
+        Tests the delete_goal endpoint with an existing goal.
+
+    test_delete_non_existing_goal:
+        Tests the delete_goal endpoint with a non-existing goal.
 """
 
 from typing import Generator
@@ -96,6 +102,8 @@ def initialize_goal() -> None:
         )
         session.add(goal)
         session.commit()
+        session.refresh(goal)
+        return goal
 
 def test_get_goals(client: TestClient) -> None:
     """Test the get_goals endpoint.
@@ -468,3 +476,41 @@ def test_create_goal_with_none_due_date(client: TestClient) -> None:
     assert created_goal["status"] == "to refine"
     assert created_goal["priority"] == "medium"
     assert created_goal["due_date"] is None
+
+def test_delete_existing_goal(client: TestClient) -> None:
+    """Test the delete_goal endpoint with an existing goal.
+
+    This test checks if the delete_goal endpoint correctly deletes an existing goal.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    # Initialize a test goal
+    goal = initialize_goal()
+
+    # Make a request to the delete_goal endpoint
+    response = client.delete(f"/v1/goals/{goal.id}")
+
+    # Check the response
+    assert response.status_code == 204
+
+    # Verify the goal was deleted from the database
+    with next(get_session()) as session:
+        goal_in_db = session.get(Goal, goal.id)
+        assert goal_in_db is None
+
+def test_delete_non_existing_goal(client: TestClient) -> None:
+    """Test the delete_goal endpoint with a non-existing goal.
+
+    This test checks if the delete_goal endpoint returns a 404 status code
+    when the goal does not exist.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    # Make a request to the delete_goal endpoint with a non-existing goal ID
+    response = client.delete("/v1/goals/999")
+
+    # Check the response
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Goal not found"}
