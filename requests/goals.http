@@ -12,6 +12,14 @@ POST http://localhost:8000/v1/goals
 }
 
 ###
+PUT http://localhost:8000/v1/goals/2
+
+{
+    "name": "second goal",
+    "priority": "low"
+}
+
+###
 DELETE http://localhost:8000/v1/goals/2
 
 ###

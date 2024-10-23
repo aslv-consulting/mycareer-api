@@ -57,6 +57,34 @@ async def create_goal(goal: GoalCreate, session: SessionDep) -> GoalRead:
     session.refresh(db_goal)
     return db_goal
 
+@router.put("/{goal_id}", response_model=GoalRead, tags=["goals"])
+async def update_goal(goal_id: int, goal: GoalCreate, session: SessionDep) -> GoalRead:
+    """
+    ## Description
+
+    Endpoint to update an existing goal by ID.
+
+    ## Args
+
+        goal_id (int): The ID of the goal to be updated.
+
+        goal (GoalCreate): The goal object with updated data.
+
+    ## Returns
+
+        GoalRead: The updated goal object.
+    """
+    db_goal = session.get(Goal, goal_id)
+    if not db_goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+
+    for key, value in goal.dict().items():
+        setattr(db_goal, key, value)
+
+    session.commit()
+    session.refresh(db_goal)
+    return db_goal
+
 @router.get("/{goal_id}", response_model=GoalRead, tags=["goals"])
 async def get_goal(goal_id: int, session: SessionDep) -> GoalRead:
     """
