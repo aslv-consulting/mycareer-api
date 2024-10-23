@@ -53,6 +53,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/.venv/bin/pylint",
             "args": [
+              "--rcfile=pylint.ini",
               "${workspaceFolder}/mycareer",
               "${workspaceFolder}/tests"
             ],

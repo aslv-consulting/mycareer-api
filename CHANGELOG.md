@@ -11,5 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of the My Career API.
 - Tests with coverage.
-- List goals
-
+- Manage goals

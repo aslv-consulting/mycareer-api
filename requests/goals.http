@@ -1,4 +1,11 @@
-# GET Request
 GET http://localhost:8000/v1/goals
+
+###
+POST http://localhost:8000/v1/goals
+
+{
+    "name": "second goal",
+    "priority": "high"
+}
 
 ###

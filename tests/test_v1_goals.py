@@ -7,9 +7,58 @@ Fixtures:
     client_fixture: Creates a TestClient for the FastAPI app.
 
 Functions:
-    initialize_goal: Initializes a test goal in the database.
-    test_get_goals: Tests the get_goals endpoint.
+    initialize_goal: 
+        Initializes a test goal in the database.
+
+    test_get_goals: 
+        Tests the get_goals endpoint.
+
+    test_create_goal: 
+        Tests the create_goal endpoint with all fields set.
+    
+    test_create_goal_without_optional_fields: 
+        Tests the create_goal endpoint without optional fields.
+    
+    test_create_goal_without_fields: 
+        Tests the create_goal endpoint without fields.
+
+    test_create_goal_with_empty_name: 
+        Tests the create_goal endpoint with an empty name.
+    
+    test_create_goal_with_none_name: 
+        Tests the create_goal endpoint with an None name.
+
+    test_create_goal_with_none_description: 
+        Tests the create_goal endpoint with a None description.
+    
+    test_create_goal_with_empty_description: 
+        Tests the create_goal endpoint with an empty description.
+
+    test_create_goal_with_empty_status: 
+        Tests the create_goal endpoint with an empty status.
+
+    test_create_goal_with_none_status: 
+        Tests the create_goal endpoint with a None status.
+
+    test_create_goal_with_bad_status: 
+        Tests the create_goal endpoint with bad status.
+
+    test_create_goal_with_empty_priority: 
+        Tests the create_goal endpoint with an empty priority.
+
+    test_create_goal_with_none_priority: 
+        Tests the create_goal endpoint with a None priority.
+    
+    test_create_goal_with_bad_priority: 
+        Tests the create_goal endpoint with bad priority.
+
+    test_create_goal_with_empty_due_date: 
+        Tests the create_goal endpoint with an empty due date.
+    
+    test_create_goal_with_none_due_date: 
+        Tests the create_goal endpoint with a None due date.
 """
+
 from typing import Generator
 import pytest
 from fastapi.testclient import TestClient
@@ -17,7 +66,6 @@ from sqlmodel import SQLModel
 from mycareer.main import app
 from mycareer.models import Goal
 from mycareer.database import engine, get_session
-
 
 @pytest.fixture(name="client")
 def client_fixture() -> Generator[TestClient, None, None]:
@@ -71,3 +119,352 @@ def test_get_goals(client: TestClient) -> None:
     assert goals[0]["description"] == "A test goal"
     assert goals[0]["status"] == "to refine"
     assert goals[0]["priority"] == "medium"
+
+def test_create_goal(client: TestClient) -> None:
+    """Test the create_goal endpoint with all fields set.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when all fields are provided.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "description": "A new goal",
+        "status": "to refine",
+        "priority": "medium",
+        "due_date": "2024-12-31T23:59:59"
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] == "A new goal"
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] == "2024-12-31T23:59:59"
+
+    # Verify the goal was added to the database
+    with next(get_session()) as session:
+        goal_in_db = session.get(Goal, created_goal["id"])
+        assert goal_in_db is not None
+        assert goal_in_db.name == "New Goal"
+        assert goal_in_db.description == "A new goal"
+        assert goal_in_db.status == "to refine"
+        assert goal_in_db.priority == "medium"
+        assert goal_in_db.due_date.isoformat() == "2024-12-31T23:59:59"
+
+def test_create_goal_without_optional_fields(client: TestClient) -> None:
+    """Test the create_goal endpoint without optional fields.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when only the required fields are provided.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal"
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] is None
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
+
+def test_create_goal_without_fields(client: TestClient) -> None:
+    """Test the create_goal endpoint without fields.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the all fields are missing.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {}
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_empty_name(client: TestClient) -> None:
+    """Test the create_goal endpoint with an empty name.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the name field is empty.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": ""
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_none_name(client: TestClient) -> None:
+    """Test the create_goal endpoint with None name.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the name field is None.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": None
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_empty_description(client: TestClient) -> None:
+    """Test the create_goal endpoint with an empty description.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when the description field is empty.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "description": ""
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] == ""
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
+
+def test_create_goal_with_none_description(client: TestClient) -> None:
+    """Test the create_goal endpoint with a None description.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when the description field is None.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "description": None
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] is None
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
+
+def test_create_goal_with_empty_status(client: TestClient) -> None:
+    """Test the create_goal endpoint with an empty status.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the status field is empty.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "status": ""
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_none_status(client: TestClient) -> None:
+    """Test the create_goal endpoint with a None status.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when the status field is None.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "status": None
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] is None
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
+
+def test_create_goal_with_bad_status(client: TestClient) -> None:
+    """Tests the create_goal endpoint with bad status.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the status fields has a bad value.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "status": "bad status"
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_empty_priority(client: TestClient) -> None:
+    """Test the create_goal endpoint with an empty priority.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the priority field is empty.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "priority": ""
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_none_priority(client: TestClient) -> None:
+    """Test the create_goal endpoint with a None priority.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when the priority field is None.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "priority": None
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] is None
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
+
+def test_create_goal_with_bad_priority(client: TestClient) -> None:
+    """Tests the create_goal endpoint with bad priority.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the priority fields has a bad value.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "priority": "bad priority"
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_empty_due_date(client: TestClient) -> None:
+    """Test the create_goal endpoint with an empty due date.
+
+    This test checks if the create_goal endpoint returns a 422 status code
+    when the due_date field is empty.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "due_date": ""
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 422
+
+def test_create_goal_with_none_due_date(client: TestClient) -> None:
+    """Test the create_goal endpoint with a None due date.
+
+    This test checks if the create_goal endpoint correctly creates a new goal
+    when the due_date field is None.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    goal_data = {
+        "name": "New Goal",
+        "due_date": None
+    }
+
+    # Make a request to the create_goal endpoint
+    response = client.post("/v1/goals", json=goal_data)
+
+    # Check the response
+    assert response.status_code == 200
+    created_goal = response.json()
+    assert created_goal["name"] == "New Goal"
+    assert created_goal["description"] is None
+    assert created_goal["status"] == "to refine"
+    assert created_goal["priority"] == "medium"
+    assert created_goal["due_date"] is None
