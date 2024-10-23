@@ -13,6 +13,12 @@ Functions:
     test_get_goals: 
         Tests the get_goals endpoint.
 
+    test_get_existing_goal:
+        Tests the get_goal endpoint with an existing goal.
+
+    test_get_non_existing_goal:
+        Tests the get_goal endpoint with a non-existing goal.
+
     test_create_goal: 
         Tests the create_goal endpoint with all fields set.
     
@@ -166,6 +172,44 @@ def test_create_goal(client: TestClient) -> None:
         assert goal_in_db.status == "to refine"
         assert goal_in_db.priority == "medium"
         assert goal_in_db.due_date.isoformat() == "2024-12-31T23:59:59"
+
+def test_get_existing_goal(client: TestClient) -> None:
+    """Test the get_goal endpoint with an existing goal.
+
+    This test checks if the get_goal endpoint returns the goal with the given ID.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    # Initialize a test goal
+    goal = initialize_goal()
+
+    # Make a request to the get_goal endpoint
+    response = client.get(f"/v1/goals/{goal.id}")
+
+    # Check the response
+    assert response.status_code == 200
+    goal_data = response.json()
+    assert goal_data["name"] == "Test Goal"
+    assert goal_data["description"] == "A test goal"
+    assert goal_data["status"] == "to refine"
+    assert goal_data["priority"] == "medium"
+
+def test_get_non_existing_goal(client: TestClient) -> None:
+    """Test the get_goal endpoint with a non-existing goal.
+
+    This test checks if the get_goal endpoint returns a 404 status code
+    when the goal does not exist.
+
+    Args:
+        client (TestClient): The test client for making requests to the FastAPI app.
+    """
+    # Make a request to the delete_goal endpoint with a non-existing goal ID
+    response = client.get("/v1/goals/999")
+
+    # Check the response
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Goal not found"}
 
 def test_create_goal_without_optional_fields(client: TestClient) -> None:
     """Test the create_goal endpoint without optional fields.

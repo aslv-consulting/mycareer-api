@@ -1,6 +1,9 @@
 GET http://localhost:8000/v1/goals
 
 ###
+GET http://localhost:8000/v1/goals/1
+
+###
 POST http://localhost:8000/v1/goals
 
 {

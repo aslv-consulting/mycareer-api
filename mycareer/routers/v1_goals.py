@@ -4,6 +4,8 @@ This module defines the API endpoints for managing goals in the My Career API.
 Functions:
     get_goals: Endpoint to get all goals.
     create_goal: Endpoint to create a new goal.
+    get_goal: Endpoint to get a single goal by ID.
+    delete_goal: Endpoint to delete a goal by ID.
 """
 
 from typing import Annotated, List
@@ -54,6 +56,30 @@ async def create_goal(goal: GoalCreate, session: SessionDep) -> GoalRead:
     session.commit()
     session.refresh(db_goal)
     return db_goal
+
+@router.get("/{goal_id}", response_model=GoalRead, tags=["goals"])
+async def get_goal(goal_id: int, session: SessionDep) -> GoalRead:
+    """
+    ## Description
+
+    Endpoint to get a single goal by ID.
+
+    ## Args
+
+        goal_id (int): The ID of the goal to be retrieved.
+
+    ## Returns
+
+        GoalRead: The goal object.
+
+    ## Raises
+
+        HTTPException: If the goal with the given ID does not exist.
+    """
+    goal = session.get(Goal, goal_id)
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+    return goal
 
 @router.delete("/{goal_id}", status_code=204, tags=["goals"])
 async def delete_goal(goal_id: int, session: SessionDep) -> None:
